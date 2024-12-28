@@ -47,13 +47,6 @@ export const Kanban = () => {
 
     const taskId = active.id as string;
     const newStatus = over.id as Task["status"];
-    console.log(
-      "DnD Details: " +
-        "Current Task Id: " +
-        taskId +
-        " New Status: " +
-        newStatus
-    );
 
     setTasks((prevTasks) =>
       prevTasks.map((task) =>

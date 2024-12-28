@@ -11,3 +11,7 @@ export type Column = {
   id: TaskStatus;
   title: string;
 };
+
+export type TextProp = {
+  text: string;
+};
