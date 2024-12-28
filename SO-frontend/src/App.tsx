@@ -5,6 +5,8 @@ import { SideBar } from "./components/SideBar";
 import { TopBar } from "./components/TopBar";
 import { Box } from "@mui/material";
 import { KanbanPage } from "./pages/KanbanPage";
+import { Chat } from "./components/Chat";
+import { AIChatPage } from "./pages/AIChatPage";
 
 function App() {
   return (
@@ -13,7 +15,8 @@ function App() {
       <Form/> */}
       <Box display="flex">
         <SideBar />
-        <KanbanPage />
+        <AIChatPage />
+        {/* <KanbanPage /> */}
       </Box>
     </>
   );
