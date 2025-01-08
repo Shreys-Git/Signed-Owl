@@ -48,7 +48,7 @@ export const Chat = () => {
       setUserInput("");
       setIsNewInputAvailable(false);
     }
-  }, [isNewInputAvailable, userInput]);
+  }, [isNewInputAvailable, userMessages, AIMessages]);
 
   return (
     <Card

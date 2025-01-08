@@ -7,15 +7,20 @@ import { Box } from "@mui/material";
 import { KanbanPage } from "./pages/KanbanPage";
 import { Chat } from "./components/Chat";
 import { AIChatPage } from "./pages/AIChatPage";
+import { StripeCheckout } from "./components/StripeCheckout";
+import { AgreementEditor } from "./components/AgreementEditor";
 
 function App() {
   return (
     <>
-      {/* <FetchDataComponent/>
-      <Form/> */}
+      {/* <FetchDataComponent />
+      <Form /> */}
       <Box display="flex">
         <SideBar />
-        <AIChatPage />
+        <AgreementEditor />
+        {/* <StripeCheckout /> */}
+        {/* <AIChatPage /> */}
+
         {/* <KanbanPage /> */}
       </Box>
     </>
