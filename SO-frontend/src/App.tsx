@@ -9,6 +9,7 @@ import { Chat } from "./components/Chat";
 import { AIChatPage } from "./pages/AIChatPage";
 import { StripeCheckout } from "./components/StripeCheckout";
 import { AgreementEditor } from "./components/AgreementEditor";
+import { AIContractDrafter } from "./pages/AIContractDrafter";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <Form /> */}
       <Box display="flex">
         <SideBar />
-        <AgreementEditor />
+        <AIContractDrafter />
         {/* <StripeCheckout /> */}
         {/* <AIChatPage /> */}
 

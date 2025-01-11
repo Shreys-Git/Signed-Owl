@@ -3,6 +3,14 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import { Box, Button } from "@mui/material";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
+
+type EditorProps = {
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+  documentId: string;
+  setDocumentId: React.Dispatch<React.SetStateAction<string>>;
+};
 
 const modules = {
   toolbar: [
@@ -20,36 +28,31 @@ const modules = {
   ],
 };
 
-export const AgreementEditor = () => {
-  const [content, setContent] = useState("");
-  const [documentId, setDocumentId] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/document/1")
-      .then((response) => {
-        setContent(response.data.content);
-        setDocumentId(response.data.id);
-      })
-      .catch((error) => console.error("Error fetching document:", error));
-  }, []);
+export const AgreementEditor = ({
+  content,
+  setContent,
+  documentId,
+  setDocumentId,
+}: EditorProps) => {
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8000/contract/save")
+  //     .then((response) => {
+  //       setContent(response.data.content);
+  //       setDocumentId(response.data.id);
+  //     })
+  //     .catch((error) => console.error("Error fetching document:", error));
+  // }, []);
 
   const saveDocument = () => {
     const data = { content };
-    if (documentId) {
-      axios
-        .put(`http://localhost:8000/document/${documentId}`, data)
-        .then(() => alert("Document updated!"))
-        .catch((error) => console.error("Error updating document:", error));
-    } else {
-      axios
-        .post("http://localhost:8000/document", data)
-        .then((response) => {
-          setDocumentId(response.data.id);
-          alert("Document saved!");
-        })
-        .catch((error) => console.error("Error saving document:", error));
-    }
+    axios
+      .post("http://localhost:8000/contract/mongo/save", data)
+      .then((response) => {
+        setDocumentId(response.data.id);
+        alert("Document saved!");
+      })
+      .catch((error) => console.error("Error saving document:", error));
   };
 
   return (
@@ -67,6 +70,7 @@ export const AgreementEditor = () => {
         variant="contained"
         color="primary"
         style={{ marginBottom: "20px" }}
+        startIcon={<SaveAsIcon />}
       >
         Save Document
       </Button>
