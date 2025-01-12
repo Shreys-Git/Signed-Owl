@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { AgreementFeedback } from "../components/AgreementFeedback";
 import { AgreementEditor } from "../components/AgreementEditor";
 import { useState } from "react";
+import HoverHighlightEditor from "../components/Editor";
 
 export const AIContractDrafter = () => {
   const [content, setContent] = useState("");
@@ -10,12 +11,13 @@ export const AIContractDrafter = () => {
 
   return (
     <Box display="flex" flexDirection="row">
-      <AgreementEditor
+      {/* <AgreementEditor
         content={content}
         setContent={setContent}
         documentId={documentId}
         setDocumentId={setDocumentId}
-      />
+      /> */}
+      <HoverHighlightEditor />
       <AgreementFeedback
         content={content}
         setContent={setContent}
