@@ -9,16 +9,16 @@ type EditorPromptProps = {
   setPrompt: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const AgreementFeedback = ({
+export const MagicEditor = ({
   content,
   setContent,
   prompt,
   setPrompt,
 }: EditorPromptProps) => {
   const promptLLM = () => {
-    const data = { prompt }; // Include the prompt in the data if needed
+    const data = { prompt: prompt, agreement: content }; // Include the prompt in the data if needed
     axios
-      .post("http://localhost:8000/contract/langgraph/llm", data)
+      .post("http://localhost:8000/contract/langgraph/magicEdit", data)
       .then((response) => {
         setContent(response.data.llmContent.content);
         alert("Document saved!");
@@ -33,10 +33,6 @@ export const AgreementFeedback = ({
 
   return (
     <Box padding="20px">
-      <Typography>Owlie - Your AI Assistant</Typography>
-      <br />
-      <Divider />
-      <br />
       <TextField
         id="filled-multiline-flexible"
         label="Prompt..."

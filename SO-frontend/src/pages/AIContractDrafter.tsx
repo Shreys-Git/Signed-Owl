@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import { AgreementFeedback } from "../components/AgreementFeedback";
-import { AgreementEditor } from "../components/AgreementEditor";
+import { MagicEditor } from "../components/MagicEditor";
 import { useState } from "react";
 import HoverHighlightEditor from "../components/Editor";
+import { Owlie } from "../components/Owlie";
 
 export const AIContractDrafter = () => {
   const [content, setContent] = useState("");
@@ -18,12 +18,18 @@ export const AIContractDrafter = () => {
         setDocumentId={setDocumentId}
       /> */}
       <HoverHighlightEditor />
-      <AgreementFeedback
+      <Owlie
         content={content}
         setContent={setContent}
         prompt={prompt}
         setPrompt={setPrompt}
       />
+      {/* <MagicEditor
+        content={content}
+        setContent={setContent}
+        prompt={prompt}
+        setPrompt={setPrompt}
+      /> */}
     </Box>
   );
 };

@@ -10,6 +10,7 @@ import { AIChatPage } from "./pages/AIChatPage";
 import { StripeCheckout } from "./components/StripeCheckout";
 import { AgreementEditor } from "./components/AgreementEditor";
 import { AIContractDrafter } from "./pages/AIContractDrafter";
+import DiffViewer from "./components/DiffViewer";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       {/* <FetchDataComponent />
       <Form /> */}
       <Box display="flex">
-        <SideBar />
+        {/* <SideBar /> */}
         <AIContractDrafter />
         {/* <StripeCheckout /> */}
         {/* <AIChatPage /> */}
