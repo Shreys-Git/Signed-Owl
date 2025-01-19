@@ -5,8 +5,8 @@ import { Insights } from "@mui/icons-material";
 import { Tasks } from "./Tasks";
 
 type OwlieProps = {
-  content: string;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
+  editorContent: string;
+  setEditorContent: React.Dispatch<React.SetStateAction<string>>;
   prompt: string;
   setPrompt: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -14,8 +14,8 @@ type OwlieProps = {
 type View = "magicEditor" | "insights" | "tasks";
 
 export const Owlie = ({
-  content,
-  setContent,
+  editorContent,
+  setEditorContent,
   prompt,
   setPrompt,
 }: OwlieProps) => {
@@ -24,8 +24,8 @@ export const Owlie = ({
   const views = {
     magicEditor: (
       <MagicEditor
-        content={content}
-        setContent={setContent}
+        editorContent={editorContent}
+        setEditorContent={setEditorContent}
         prompt={prompt}
         setPrompt={setPrompt}
       />

@@ -5,7 +5,7 @@ import HoverHighlightEditor from "../components/Editor";
 import { Owlie } from "../components/Owlie";
 
 export const AIContractDrafter = () => {
-  const [content, setContent] = useState("");
+  const [editorContent, setEditorContent] = useState("");
   const [prompt, setPrompt] = useState("");
   const [documentId, setDocumentId] = useState("");
 
@@ -17,10 +17,13 @@ export const AIContractDrafter = () => {
         documentId={documentId}
         setDocumentId={setDocumentId}
       /> */}
-      <HoverHighlightEditor />
+      <HoverHighlightEditor
+        editorContent={editorContent}
+        setEditorContent={setEditorContent}
+      />
       <Owlie
-        content={content}
-        setContent={setContent}
+        editorContent={editorContent}
+        setEditorContent={setEditorContent}
         prompt={prompt}
         setPrompt={setPrompt}
       />

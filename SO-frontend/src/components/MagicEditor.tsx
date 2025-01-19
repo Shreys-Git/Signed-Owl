@@ -1,35 +1,124 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
 import axios from "axios";
+import { useState } from "react";
 
 type EditorPromptProps = {
-  content: string;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
+  editorContent: string;
+  setEditorContent: React.Dispatch<React.SetStateAction<string>>;
   prompt: string;
   setPrompt: React.Dispatch<React.SetStateAction<string>>;
 };
 
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  maxHeight: "80vh",
+  overflowY: "auto",
+};
+
 export const MagicEditor = ({
-  content,
-  setContent,
+  editorContent,
+  setEditorContent,
   prompt,
   setPrompt,
 }: EditorPromptProps) => {
+  const [open, setOpen] = useState(false);
+  const [diffs, setDiffs] = useState<string[]>([]);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const promptLLM = () => {
-    const data = { prompt: prompt, agreement: content }; // Include the prompt in the data if needed
+    const data = { prompt: prompt, agreement: formatAgreement(editorContent) };
     axios
       .post("http://localhost:8000/contract/langgraph/magicEdit", data)
       .then((response) => {
-        setContent(response.data.llmContent.content);
+        setEditorContent(response.data.updated_agreement);
+        setDiffs(response.data.differences); // Use raw differences
         alert("Document saved!");
       })
       .catch((error) => console.error("Error saving document:", error));
   };
 
-  // Handle prompt change in the TextField
   const handlePromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPrompt(event.target.value); // Update prompt state
+    setPrompt(event.target.value);
   };
+
+  const acceptChange = (index: number) => {
+    const updatedDiffs = diffs.slice(); // Create a shallow copy
+    updatedDiffs[index] = updatedDiffs[index].replace(/^[-+]/, " "); // Mark as accepted
+    setDiffs(updatedDiffs);
+  };
+
+  const rejectChange = (index: number) => {
+    const updatedDiffs = diffs.slice(); // Create a shallow copy
+    updatedDiffs.splice(index, 1); // Remove the rejected line
+    setDiffs(updatedDiffs);
+  };
+
+  const formatAgreement = (content: string) => {
+    return content
+      .replace(/"/g, '\\"')
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, "\\n");
+  };
+
+  const formatDifferences = (diffs: string[]): string => {
+    return diffs
+      .map((line, index) => {
+        if (line.startsWith("+")) {
+          return `
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+              <span style="background-color: #d4edda; color: black; padding: 2px; flex-grow: 1;">
+                ${line}
+              </span>
+              <button 
+                onclick="window.acceptChange(${index})" 
+                style="background-color: #4caf50; color: white; border: none; padding: 2px 6px; cursor: pointer;">
+                Accept
+              </button>
+              <button 
+                onclick="window.rejectChange(${index})" 
+                style="background-color: #f44336; color: white; border: none; padding: 2px 6px; cursor: pointer;">
+                Reject
+              </button>
+            </div>`;
+        } else if (line.startsWith("-")) {
+          return `
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+              <span style="background-color: #f8d7da; color: black; padding: 2px; text-decoration: line-through; flex-grow: 1;">
+                ${line}
+              </span>
+              <button 
+                onclick="window.acceptChange(${index})" 
+                style="background-color: #4caf50; color: white; border: none; padding: 2px 6px; cursor: pointer;">
+                Accept
+              </button>
+              <button 
+                onclick="window.rejectChange(${index})" 
+                style="background-color: #f44336; color: white; border: none; padding: 2px 6px; cursor: pointer;">
+                Reject
+              </button>
+            </div>`;
+        } else if (line.startsWith(" ")) {
+          return `<div style="margin-bottom: 4px;">${line}</div>`;
+        }
+        return `<div>${line}</div>`;
+      })
+      .join("");
+  };
+
+  // Attach handlers to the window object (to work with `dangerouslySetInnerHTML`)
+  (window as any).acceptChange = acceptChange;
+  (window as any).rejectChange = rejectChange;
 
   return (
     <Box padding="20px">
@@ -39,8 +128,8 @@ export const MagicEditor = ({
         multiline
         rows={8}
         variant="filled"
-        value={prompt} // Bind the value of the input field to prompt state
-        onChange={handlePromptChange} // Update the prompt state when the user types
+        value={prompt}
+        onChange={handlePromptChange}
       />
       <br />
       <br />
@@ -53,6 +142,25 @@ export const MagicEditor = ({
       >
         Generate
       </Button>
+
+      <Button onClick={handleOpen}>Open modal</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Differences
+          </Typography>
+          <Box
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            dangerouslySetInnerHTML={{ __html: formatDifferences(diffs) }}
+          />
+        </Box>
+      </Modal>
     </Box>
   );
 };
