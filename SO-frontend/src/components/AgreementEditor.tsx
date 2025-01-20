@@ -1,81 +1,73 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import axios from "axios";
-import { Box, Button } from "@mui/material";
+import "react-quill/dist/quill.snow.css"; // Import ReactQuill's CSS
 
-const modules = {
-  toolbar: [
-    [{ font: [] }],
-    [{ size: ["small", false, "large", "huge"] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ color: [] }, { background: [] }],
-    [{ script: "sub" }, { script: "super" }],
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ align: [] }],
-    ["blockquote", "code-block"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "image"],
-    ["clean"],
-  ],
-};
+// React component for the Quill editor
+export const AgreementEditor: React.FC = () => {
+  // Initial content with a span that has the tooltip functionality
+  const [editorContent, setEditorContent] = useState<string>(
+    `<p>This is some text. <span class="tooltip" data-tooltip="This is a tooltip">Hover over me!</span> And some more text.</p>`
+  );
 
-export const AgreementEditor = () => {
-  const [content, setContent] = useState("");
-  const [documentId, setDocumentId] = useState(null);
+  // Handling changes in the editor content
+  const handleChange = (value: string) => {
+    setEditorContent(value);
+  };
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/document/1")
-      .then((response) => {
-        setContent(response.data.content);
-        setDocumentId(response.data.id);
-      })
-      .catch((error) => console.error("Error fetching document:", error));
-  }, []);
-
-  const saveDocument = () => {
-    const data = { content };
-    if (documentId) {
-      axios
-        .put(`http://localhost:8000/document/${documentId}`, data)
-        .then(() => alert("Document updated!"))
-        .catch((error) => console.error("Error updating document:", error));
-    } else {
-      axios
-        .post("http://localhost:8000/document", data)
-        .then((response) => {
-          setDocumentId(response.data.id);
-          alert("Document saved!");
-        })
-        .catch((error) => console.error("Error saving document:", error));
-    }
+  // Quill modules configuration (toolbar options)
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline"],
+      ["link"],
+      ["blockquote"],
+      ["clean"],
+    ],
   };
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        p: 2,
-      }}
-    >
-      <Button
-        onClick={saveDocument}
-        variant="contained"
-        color="primary"
-        style={{ marginBottom: "20px" }}
-      >
-        Save Document
-      </Button>
+    <div>
+      {/* Render the ReactQuill editor */}
       <ReactQuill
-        value={content}
-        onChange={setContent}
+        value={
+          '<h2>This is Big Dawg text</h2> <button type="button">Click Me!</button>'
+        }
+        onChange={handleChange}
         modules={modules}
-        style={{ flex: 1, display: "flex", flexDirection: "column" }}
+        theme="snow"
       />
-    </Box>
+
+      {/* Add Tooltip CSS to the page */}
+      <style>
+        {`
+          .tooltip {
+            position: relative;
+            cursor: pointer;
+          }
+
+          .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            visibility: hidden;
+            opacity: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: opacity 0.2s;
+          }
+
+          .tooltip:hover::after {
+            visibility: visible;
+            opacity: 1;
+          }
+        `}
+      </style>
+    </div>
   );
 };
