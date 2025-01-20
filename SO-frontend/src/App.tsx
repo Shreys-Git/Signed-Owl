@@ -11,6 +11,8 @@ import { StripeCheckout } from "./components/StripeCheckout";
 import { AgreementEditor } from "./components/AgreementEditor";
 import { AIContractDrafter } from "./pages/AIContractDrafter";
 import DiffViewer from "./components/DiffViewer";
+import { NavUpload } from "./components/NavUpload";
+import NavFileGrid from "./components/NavFileGrid";
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
       <Form /> */}
       <Box display="flex">
         {/* <SideBar /> */}
-        <AIContractDrafter />
+        <NavFileGrid />
+        {/* <AIContractDrafter /> */}
         {/* <StripeCheckout /> */}
         {/* <AIChatPage /> */}
 
