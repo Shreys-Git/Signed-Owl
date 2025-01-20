@@ -19,9 +19,23 @@ const modalStyle = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  display: "flex",
+  flexDirection: "column",
   maxHeight: "80vh",
-  overflowY: "auto",
+};
+
+const modalContentStyle = {
+  flex: 1, // Allow this area to expand and take up available space
+  overflowY: "auto", // Enable scrolling for content
+  padding: "16px",
+};
+
+const modalFooterStyle = {
+  borderTop: "1px solid #ddd",
+  padding: "8px",
+  display: "flex",
+  justifyContent: "center",
+  backgroundColor: "#f9f9f9",
 };
 
 export const MagicEditor = ({
@@ -42,7 +56,7 @@ export const MagicEditor = ({
       .post("http://localhost:8000/contract/langgraph/magicEdit", data)
       .then((response) => {
         setEditorContent(response.data.updated_agreement);
-        setDiffs(response.data.differences); // Use raw differences
+        setDiffs(response.data.differences);
         alert("Document saved!");
       })
       .catch((error) => console.error("Error saving document:", error));
@@ -62,6 +76,15 @@ export const MagicEditor = ({
     const updatedDiffs = diffs.slice(); // Create a shallow copy
     updatedDiffs.splice(index, 1); // Remove the rejected line
     setDiffs(updatedDiffs);
+  };
+
+  const saveChanges = () => {
+    const finalContent = diffs
+      .filter((line) => !line.startsWith("-")) // Exclude rejected lines
+      .map((line) => line.replace(/^[-+ ]/, "")) // Remove markers
+      .join("\n"); // Combine lines into final content
+    setEditorContent(finalContent); // Update editor content
+    setOpen(false); // Close modal
   };
 
   const formatAgreement = (content: string) => {
@@ -151,14 +174,26 @@ export const MagicEditor = ({
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Differences
-          </Typography>
-          <Box
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            dangerouslySetInnerHTML={{ __html: formatDifferences(diffs) }}
-          />
+          <Box sx={modalContentStyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Differences
+            </Typography>
+            <Box
+              id="modal-modal-description"
+              sx={{ mt: 2 }}
+              dangerouslySetInnerHTML={{ __html: formatDifferences(diffs) }}
+            />
+          </Box>
+          <Box sx={modalFooterStyle}>
+            <Button
+              onClick={saveChanges}
+              variant="contained"
+              color="success"
+              sx={{ width: "100%" }}
+            >
+              Save Changes
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Box>
