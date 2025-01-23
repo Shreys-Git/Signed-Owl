@@ -4,6 +4,8 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Button, Typography } from "@mui/material";
 import axios from "axios";
 import { Login } from "./Login";
+import { NavUpload } from "./NavUpload";
+import { FileUpload } from "./FileUpload";
 
 // TypeScript interfaces for the data structure
 interface Party {
@@ -59,6 +61,8 @@ export default function NavFileGrid() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<any[]>([]);
+  const [files, setFiles] = useState<File[] | null>([]);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
 
   const transformData = (data: Agreement[]): any[] => {
     return data.map((agreement) => ({
@@ -96,8 +100,44 @@ export default function NavFileGrid() {
     window.location.href = "http://localhost:8000/docusign/navigator/login";
   };
 
+  // useEffect(() => {
+
+  //   const uploadDocuments = async () =>{
+
+  //   }
+  //   const formData = new FormData();
+
+  //   // Append additional files if any
+  //   if (files) {
+  //     files.forEach((file) => formData.append("additional_docs", file));
+  //   }
+
+  //   console.log("The payload being sent is:", formData);
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/files/upload",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       console.log("Upload succeeded");
+  //     } else {
+  //       console.error("Unexpected response:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during POST request:", error);
+  //   }
+  // }, [files]);
   return (
     <div>
+      <Button onClick={() => setOpenUploadModal(true)}> Upload Files</Button>
+      {openUploadModal && <FileUpload setFiles={setFiles} />}
       <Box>
         <Typography>Please log in to view agreements.</Typography>
         <Button onClick={handleNavAPILogin}> Login Big Boy</Button>

@@ -10,26 +10,43 @@ import { AIChatPage } from "./pages/AIChatPage";
 import { StripeCheckout } from "./components/StripeCheckout";
 import { AgreementEditor } from "./components/AgreementEditor";
 import { AIContractDrafter } from "./pages/AIContractDrafter";
-import DiffViewer from "./components/DiffViewer";
+// import DiffViewer from "./components/DiffViewer";
 import { NavUpload } from "./components/NavUpload";
 import NavFileGrid from "./components/NavFileGrid";
+import { WorkflowCalendar } from "./components/Calander";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { CalendarPage } from "./pages/CalendarPage";
+import { FilesPage } from "./pages/FilesPage";
 
 function App() {
-  return (
-    <>
-      {/* <FetchDataComponent />
-      <Form /> */}
-      <Box display="flex">
-        {/* <SideBar /> */}
-        <NavFileGrid />
-        {/* <AIContractDrafter /> */}
-        {/* <StripeCheckout /> */}
-        {/* <AIChatPage /> */}
-
-        {/* <KanbanPage /> */}
-      </Box>
-    </>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Box> Homepage </Box>,
+      errorElement: (
+        <Box>
+          404: Ooppps are you sure you are on the right page? <h2>&#128517;</h2>
+        </Box>
+      ),
+    },
+    {
+      path: "/workload/kanban",
+      element: <KanbanPage />,
+    },
+    {
+      path: "/workload/calendar",
+      element: <CalendarPage />,
+    },
+    {
+      path: "/documents/files",
+      element: <FilesPage />,
+    },
+    {
+      path: "/documents/chat",
+      element: <AIChatPage />,
+    },
+  ]);
+  return <RouterProvider router={router} />;
 }
 
 export default App;

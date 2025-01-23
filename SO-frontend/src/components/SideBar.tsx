@@ -16,8 +16,8 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MessageIcon from "@mui/icons-material/Message";
-import { Typography, Box } from "@mui/material";
 import { Branding } from "./Branding";
+import { Link } from "react-router-dom";
 
 export const SideBar = () => {
   const [reportOpen, setReportOpen] = React.useState(true);
@@ -70,19 +70,29 @@ export const SideBar = () => {
       </ListItemButton>
       <Collapse in={documentsOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <ArticleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Files" />
-          </ListItemButton>
+          <Link
+            to="/documents/files"
+            style={{ textDecoration: "none", color: "#000000" }}
+          >
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <ArticleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Files" />
+            </ListItemButton>
+          </Link>
 
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <MessageIcon />
-            </ListItemIcon>
-            <ListItemText primary="AI Chat" />
-          </ListItemButton>
+          <Link
+            to="/documents/chat"
+            style={{ textDecoration: "none", color: "#000000" }}
+          >
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <MessageIcon />
+              </ListItemIcon>
+              <ListItemText primary="AI Chat" />
+            </ListItemButton>
+          </Link>
         </List>
       </Collapse>
 
@@ -129,19 +139,29 @@ export const SideBar = () => {
       </ListItemButton>
       <Collapse in={taskOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <AssignmentIndIcon />
-            </ListItemIcon>
-            <ListItemText primary="Kanban" />
-          </ListItemButton>
+          <Link
+            to="/workload/kanban"
+            style={{ textDecoration: "none", color: "#000000" }}
+          >
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <AssignmentIndIcon />
+              </ListItemIcon>
+              <ListItemText primary="Kanban" />
+            </ListItemButton>
+          </Link>
 
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <CalendarMonthIcon />
-            </ListItemIcon>
-            <ListItemText primary="Calendar" />
-          </ListItemButton>
+          <Link
+            to="/workload/calendar"
+            style={{ textDecoration: "none", color: "#000000" }}
+          >
+            <ListItemButton sx={{ pl: 4 }}>
+              <ListItemIcon>
+                <CalendarMonthIcon />
+              </ListItemIcon>
+              <ListItemText primary="Calendar" />
+            </ListItemButton>
+          </Link>
         </List>
       </Collapse>
     </List>

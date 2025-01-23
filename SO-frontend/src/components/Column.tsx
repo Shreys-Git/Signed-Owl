@@ -1,14 +1,16 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TaskCard } from "./TaskCard";
 import { Column as ColumnType, Task } from "./types";
 import { useDroppable } from "@dnd-kit/core";
+import { KanbanColumnTitle } from "./KanbanColumnTitle";
 
 type ColumnProps = {
   column: ColumnType;
   tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
-export function Column({ column, tasks }: ColumnProps) {
+export function Column({ column, tasks, setTasks }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -23,9 +25,13 @@ export function Column({ column, tasks }: ColumnProps) {
         height: "100%",
       }}
     >
-      <Typography variant="h5" sx={{ marginBottom: "1rem" }}>
-        {column.title}
-      </Typography>
+      <KanbanColumnTitle
+        columnTitle={column.title}
+        columnColor={column.color}
+        columnTaskCount={tasks.length}
+        tasks={tasks}
+        setTasks={setTasks}
+      />
       <Box
         ref={setNodeRef}
         sx={{

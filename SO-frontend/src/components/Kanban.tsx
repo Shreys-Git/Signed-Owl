@@ -1,13 +1,13 @@
 import { useState } from "react";
-import type { Task, Column as ColumnType } from "./types";
+import { type Task, type Column as ColumnType, TaskPriority } from "./types";
 import { Column } from "./Column";
-import { Box, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 const COLUMNS: ColumnType[] = [
-  { id: "TODO", title: "To Do" },
-  { id: "IN_PROGRESS", title: "In Progress" },
-  { id: "DONE", title: "Done" },
+  { id: "TODO", title: "To Do", color: "orange" },
+  { id: "IN_PROGRESS", title: "In Progress", color: "green" },
+  { id: "DONE", title: "Done", color: "black" },
 ];
 
 const INITIAL_TASKS: Task[] = [
@@ -16,6 +16,8 @@ const INITIAL_TASKS: Task[] = [
     title: "Research Project",
     description: "Gather requirements and create initial documentation",
     status: "TODO",
+    priority: TaskPriority.HIGH,
+    tags: ["tesco", "tissot"],
   },
   {
     id: "2",
@@ -28,6 +30,7 @@ const INITIAL_TASKS: Task[] = [
     title: "API Integration",
     description: "Implement REST API endpoints",
     status: "IN_PROGRESS",
+    priority: TaskPriority.LOW,
   },
   {
     id: "4",
@@ -75,6 +78,7 @@ export const Kanban = () => {
             key={column.id}
             column={column}
             tasks={tasks.filter((task) => task.status === column.id)}
+            setTasks={setTasks}
           />
         ))}
       </Box>

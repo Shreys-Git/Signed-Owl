@@ -13,11 +13,26 @@ type UploadedFile = {
   content: string;
 };
 
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  display: "flex",
+  flexDirection: "column",
+  maxHeight: "80vh",
+  padding: "1rem",
+};
+
 interface FileUploadProps {
   setFiles: React.Dispatch<React.SetStateAction<File[] | null>>;
 }
 
-export const NavUpload: React.FC<FileUploadProps> = ({ setFiles }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ setFiles }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState<string[]>([]);
@@ -50,7 +65,7 @@ export const NavUpload: React.FC<FileUploadProps> = ({ setFiles }) => {
   });
 
   return (
-    <Paper elevation={3} sx={{ p: 3, maxWidth: 500, mx: "auto" }}>
+    <Paper elevation={3} sx={modalStyle}>
       <Typography paddingBottom="1rem">Upload PDF or DOCX Files</Typography>
 
       <Box

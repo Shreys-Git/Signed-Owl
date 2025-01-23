@@ -1,4 +1,4 @@
-import { Card, Typography } from "@mui/material";
+import { Card, Chip, Typography } from "@mui/material";
 import { Task } from "./types";
 import { useDraggable } from "@dnd-kit/core";
 
@@ -29,6 +29,23 @@ export function TaskCard({ task }: TaskCardProps) {
         whiteSpace: "nowrap",
       }}
     >
+      {task.priority && (
+        <Chip
+          label={task.priority}
+          size="small"
+          color="warning"
+          sx={{ padding: 0.5 }}
+        />
+      )}
+      {task.tags?.map((tag) => (
+        <Chip
+          label={tag}
+          size="small"
+          color="info"
+          sx={{ padding: 0.5, ml: 0.75 }}
+        />
+      ))}
+
       <Typography variant="h6" noWrap>
         {task.title}
       </Typography>

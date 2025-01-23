@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { MagicEditor } from "./MagicEditor";
 import { useState } from "react";
-import { Insights } from "@mui/icons-material";
 import { Tasks } from "./Tasks";
+import { Insights } from "./Insights";
 
 type OwlieProps = {
   editorContent: string;
@@ -30,7 +30,7 @@ export const Owlie = ({
         setPrompt={setPrompt}
       />
     ),
-    insights: <Insights />,
+    insights: <Insights agreement={editorContent} />,
     tasks: <Tasks />,
   };
 
