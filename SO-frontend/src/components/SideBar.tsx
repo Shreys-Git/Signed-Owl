@@ -20,13 +20,8 @@ import { Branding } from "./Branding";
 import { Link } from "react-router-dom";
 
 export const SideBar = () => {
-  const [reportOpen, setReportOpen] = React.useState(true);
   const [taskOpen, setTaskOpen] = React.useState(true);
   const [documentsOpen, setDocumentsOpen] = React.useState(true);
-
-  const handleReportClick = () => {
-    setReportOpen(!reportOpen);
-  };
 
   const handleTaskClick = () => {
     setTaskOpen(!taskOpen);
@@ -97,37 +92,14 @@ export const SideBar = () => {
       </Collapse>
 
       {/**       REPORTS          */}
-      <ListItemButton onClick={handleReportClick}>
-        <ListItemIcon>
-          <AssessmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Reports" />
-        {reportOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-      <Collapse in={reportOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <SummarizeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Report A" />
-          </ListItemButton>
-
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <SummarizeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Report B" />
-          </ListItemButton>
-
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <SummarizeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Report C" />
-          </ListItemButton>
-        </List>
-      </Collapse>
+      <Link to="/reports" style={{ textDecoration: "none", color: "#000000" }}>
+        <ListItemButton>
+          <ListItemIcon>
+            <AssessmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Report" />
+        </ListItemButton>
+      </Link>
 
       {/**       TASKS          */}
       <ListItemButton onClick={handleTaskClick}>

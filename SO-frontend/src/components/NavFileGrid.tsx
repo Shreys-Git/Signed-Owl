@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Button, Modal, Typography } from "@mui/material";
 import axios from "axios";
-import { Login } from "./Login";
 import { NavUpload } from "./NavUpload";
-import { ChatDocumentModal } from "./ChatDocumentModal";
 
 // TypeScript interfaces for the data structure
 interface Party {
@@ -66,30 +65,128 @@ interface Agreement {
   };
 }
 
-const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 100 },
-  { field: "signStatus", headerName: "Status", width: 100 },
-  { field: "fileName", headerName: "File Name", width: 200 },
-  { field: "type", headerName: "Type", width: 200 },
-  { field: "category", headerName: "Category", width: 150 },
-  { field: "parties", headerName: "Parties", width: 300 },
-  { field: "effectiveDate", headerName: "Effective Date", width: 130 },
-  { field: "expirationDate", headerName: "Expiration Date", width: 130 },
-];
-
 enum SignStatus {
   REVIEW = "Review",
   SIGNING = "Signature",
   COMPLETED = "Completed",
 }
+
+const columns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    width: 100,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.value}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "signStatus",
+    headerName: "Status",
+    width: 100,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "fileName",
+    headerName: "File Name",
+    width: 200,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "type",
+    headerName: "Type",
+    width: 200,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "category",
+    headerName: "Category",
+    width: 150,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "parties",
+    headerName: "Parties",
+    width: 300,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "effectiveDate",
+    headerName: "Effective Date",
+    width: 130,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+  {
+    field: "expirationDate",
+    headerName: "Expiration Date",
+    width: 130,
+    renderCell: (params) => (
+      <Link
+        to={`/documents/files/${params.row.id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {params.value}
+      </Link>
+    ),
+  },
+];
+
 export default function NavFileGrid() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<any[]>([]);
   const [files, setFiles] = useState<File[] | null>([]);
   const [openUploadModal, setOpenUploadModal] = useState(false);
-
+  const [signatureStatus, setSignatureStatus] = useState("Under Review");
   const handleClose = () => setOpenUploadModal(false);
+
   const transformData = (data: Agreement[]): any[] => {
     return data.map((agreement) => ({
       id: agreement.id,
@@ -158,9 +255,30 @@ export default function NavFileGrid() {
     }
   };
 
+  useEffect(() => {
+    // Connect to the WebSocket server
+    const socket = new WebSocket("ws://localhost:8000/docusign/ws");
+
+    // Handle incoming messages
+    socket.onmessage = (event) => {
+      setSignatureStatus(event.data); // Update the state with the received message
+    };
+
+    // Handle socket closure
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    // Cleanup the WebSocket connection
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   return (
     <div>
       <Button onClick={() => setOpenUploadModal(true)}> Upload Files</Button>
+      <Typography>{signatureStatus}</Typography>
       {openUploadModal && (
         <Modal
           sx={modalStyle}
@@ -208,7 +326,7 @@ export default function NavFileGrid() {
             }}
             pageSizeOptions={[8]}
             checkboxSelection
-            // disableRowSelectionOnClick
+            disableRowSelectionOnClick
           />
         )}
       </Box>

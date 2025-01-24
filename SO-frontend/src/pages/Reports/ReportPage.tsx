@@ -5,11 +5,12 @@ import { TopBar } from "../../components/TopBar";
 
 export const ClientReportPage = () => {
   return (
-    <Box display="flex" sx={{ backgroundColor: "#f5f5f5" }}>
+    <Box display="flex">
       <SideBar />
       <Box flexGrow={1}>
         <TopBar />
-        <ClientReport />
+
+        {/* <ClientReport /> */}
       </Box>
     </Box>
   );

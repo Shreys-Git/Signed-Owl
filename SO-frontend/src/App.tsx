@@ -43,11 +43,15 @@ function App() {
       element: <FilesPage />,
     },
     {
+      path: "/documents/files/:id",
+      element: <AIContractDrafter />,
+    },
+    {
       path: "/documents/chat",
       element: <AIChatPage />,
     },
     {
-      path: "/reports/client",
+      path: "/reports",
       element: <ClientReportPage />,
     },
   ]);
