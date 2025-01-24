@@ -17,6 +17,7 @@ import { WorkflowCalendar } from "./components/Calander";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { CalendarPage } from "./pages/CalendarPage";
 import { FilesPage } from "./pages/FilesPage";
+import { ClientReportPage } from "./pages/Reports/ClientReportPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -44,6 +45,10 @@ function App() {
     {
       path: "/documents/chat",
       element: <AIChatPage />,
+    },
+    {
+      path: "/reports/client",
+      element: <ClientReportPage />,
     },
   ]);
   return <RouterProvider router={router} />;
