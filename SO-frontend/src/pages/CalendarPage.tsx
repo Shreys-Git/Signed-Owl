@@ -1,8 +1,7 @@
 import { Box } from "@mui/material";
-import { Kanban } from "../components/Kanban";
 import { SideBar } from "../components/SideBar";
 import { TopBar } from "../components/TopBar";
-import { WorkflowCalendar } from "../components/Calander";
+import { WorkflowCalendar } from "../components/calendar/Calender";
 
 export const CalendarPage = () => {
   return (

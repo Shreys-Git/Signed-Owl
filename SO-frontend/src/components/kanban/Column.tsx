@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import { TaskCard } from "./TaskCard";
-import { Column as ColumnType, Task } from "./types";
+import { TaskCard } from "../TaskCard";
+import { Column as ColumnType, Task } from "../types";
 import { useDroppable } from "@dnd-kit/core";
 import { KanbanColumnTitle } from "./KanbanColumnTitle";
 

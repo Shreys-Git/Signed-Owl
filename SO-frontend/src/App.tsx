@@ -12,7 +12,7 @@ import { AgreementEditor } from "./components/AgreementEditor";
 import { AIContractDrafter } from "./pages/AIContractDrafter";
 // import DiffViewer from "./components/DiffViewer";
 import { FileDropArea } from "./components/common/FileDropArea";
-import { WorkflowCalendar } from "./components/Calander";
+import { WorkflowCalendar } from "./components/calendar/Calender";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { CalendarPage } from "./pages/CalendarPage";
 import { FilesPage } from "./pages/FilesPage";

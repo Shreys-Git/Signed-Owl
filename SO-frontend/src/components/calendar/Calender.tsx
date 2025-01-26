@@ -4,7 +4,6 @@ import {
   CalendarOptions,
   DateSelectArg,
   EventClickArg,
-  EventApi,
 } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -24,58 +23,65 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
+// Define the Event interface for type safety
 interface Event {
-  id?: string;
+  event_id: string;
+  document_id: string;
   title: string;
+  description: string;
   start: string;
   end?: string;
   allDay?: boolean;
 }
 
 export const WorkflowCalendar: React.FC = () => {
-  const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<Event>>({});
 
+  // Fetch all events from the backend
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get<Event[]>("/api/events");
-        setEvents(Array.isArray(response.data) ? response.data : []);
+        const response = await axios.get<Event[]>(
+          "http://localhost:8000/v1/calendar"
+        );
+        setEvents(response.data || []);
       } catch (error) {
         console.error("Failed to fetch events", error);
-        setEvents([]);
       }
     };
     fetchEvents();
   }, []);
 
+  // Add a new event
   const handleAddEvent = async () => {
-    const eventToAdd = {
+    // Ensure the `newEvent` is fully populated with default values if fields are missing
+    const eventToAdd: Event = {
       ...newEvent,
-      id: Date.now().toString(),
+      event_id: crypto.randomUUID(),
+      document_id: "", // Generate a temporary unique ID
       title: newEvent.title || "Untitled Event",
-    } as Event;
+      description: newEvent.description || "No description provided",
+      start: newEvent.start || new Date().toISOString(), // Fallback to current date if `start` is missing
+      end: newEvent.end || newEvent.start || new Date().toISOString(), // Use `start` as `end` if missing
+      allDay: newEvent.allDay ?? true, // Default to `allDay: true` if not specified
+    };
 
     try {
-      // Add to local state first
-      setEvents((prevEvents) => [...prevEvents, eventToAdd]);
-
-      // Send to backend
-      //   await axios.post("/api/events", eventToAdd);
-
+      const response = await axios.post<Event>(
+        "http://localhost:8000/v1/calendar",
+        eventToAdd
+      );
+      setEvents((prevEvents) => [...prevEvents, response.data]);
       setOpenAddModal(false);
       setNewEvent({});
     } catch (error) {
       console.error("Failed to add event", error);
-      // Optionally revert local state if backend fails
-      setEvents((prevEvents) =>
-        prevEvents.filter((e) => e.id !== eventToAdd.id)
-      );
     }
   };
 
+  // Handle a date click in the calendar to create a new event
   const handleDateClick = (selected: DateSelectArg) => {
     setNewEvent({
       start: selected.startStr,
@@ -85,17 +91,21 @@ export const WorkflowCalendar: React.FC = () => {
     setOpenAddModal(true);
   };
 
+  // Handle an event click to delete the selected event
   const handleEventClick = async (selected: EventClickArg) => {
     const confirmDelete = window.confirm(
       `Delete event '${selected.event.title}'?`
     );
     if (confirmDelete) {
       try {
-        await axios.delete(`/api/events/${selected.event.id}`);
-        selected.event.remove();
-        setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== selected.event.id)
-        );
+        const eventId = selected.event.extendedProps.event_id; // Use `extendedProps.event_id`
+        if (eventId) {
+          await axios.delete(`http://localhost:8000/v1/calendar/${eventId}`);
+          setEvents((prevEvents) =>
+            prevEvents.filter((event) => event.event_id !== eventId)
+          );
+          selected.event.remove();
+        }
       } catch (error) {
         console.error("Failed to delete event", error);
       }
@@ -128,11 +138,12 @@ export const WorkflowCalendar: React.FC = () => {
             <Typography variant="h5">Events</Typography>
             <List>
               {(events || []).map((event) => (
-                <ListItem key={event.id || Date.now()}>
+                <ListItem key={event.event_id}>
                   <ListItemText
                     primary={event.title}
                     secondary={
                       <Typography>
+                        {event.description} —{" "}
                         {formatDate(new Date(event.start), {
                           year: "numeric",
                           month: "short",

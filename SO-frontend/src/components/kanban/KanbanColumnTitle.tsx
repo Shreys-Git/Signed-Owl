@@ -14,7 +14,8 @@ import {
   InputLabel,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Task, TaskPriority } from "./types";
+import { Task, TaskPriority, TaskStatus } from "../types";
+import axios from "axios";
 
 type ColumnTitleProps = {
   columnTitle: string;
@@ -37,18 +38,28 @@ export const KanbanColumnTitle = ({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSaveTask = () => {
+  const handleSaveTask = async () => {
     if (newTask.title) {
-      setTasks([
-        ...tasks,
-        {
-          id: crypto.randomUUID(),
-          status: "TODO",
-          title: newTask.title,
-          description: newTask.description || "",
-          priority: newTask.priority as TaskPriority,
-        },
-      ]);
+      var taskStatus = "TODO";
+      if (columnTitle === "In Progress") {
+        taskStatus = "IN_PROGRESS";
+      } else if (columnTitle === "Done") {
+        taskStatus = "DONE";
+      }
+      const addTask = {
+        id: String(crypto.randomUUID()),
+        status: taskStatus as TaskStatus,
+        title: newTask.title,
+        description: newTask.description || "",
+        priority: newTask.priority as TaskPriority,
+        tags: [],
+      };
+      try {
+        await axios.post("http://localhost:8000/v1/tasks", addTask);
+      } catch (error) {
+        console.log("Error saving task to the backend");
+      }
+      setTasks([...tasks, addTask]);
       handleClose();
       setNewTask({});
     }
