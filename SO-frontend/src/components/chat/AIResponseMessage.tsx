@@ -1,7 +1,7 @@
 import { Box, Card } from "@mui/material";
-import { TextProp } from "./types";
+import { TextProp } from "../types";
 
-export const AIResponseText = ({ text }: TextProp) => {
+export const AIResponseMessage = ({ text }: TextProp) => {
   return (
     <Box display="flex">
       <Card

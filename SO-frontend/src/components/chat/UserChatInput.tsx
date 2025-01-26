@@ -33,7 +33,7 @@ export const UserChatInput = ({
         sx={{ width: "100%" }}
       />
       <IconButton
-        onClick={handleUserInputSubmit} // Use onClick instead of onSubmit
+        onClick={handleUserInputSubmit}
         sx={{
           position: "absolute",
           right: "8px",

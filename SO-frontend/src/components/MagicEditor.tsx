@@ -53,7 +53,7 @@ export const MagicEditor = ({
   const promptLLM = () => {
     const data = { prompt: prompt, agreement: formatAgreement(editorContent) };
     axios
-      .post("http://localhost:8000/contract/langgraph/magicEdit", data)
+      .post("http://localhost:8000/v1/documents/magicEdit", data)
       .then((response) => {
         setEditorContent(response.data.updated_agreement);
         setDiffs(response.data.differences);

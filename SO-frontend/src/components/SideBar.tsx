@@ -11,6 +11,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ArticleIcon from "@mui/icons-material/Article";
 import FolderIcon from "@mui/icons-material/Folder";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import PersonIcon from "@mui/icons-material/Person";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
@@ -98,6 +99,16 @@ export const SideBar = () => {
             <AssessmentIcon />
           </ListItemIcon>
           <ListItemText primary="Report" />
+        </ListItemButton>
+      </Link>
+
+      {/**       USERS          */}
+      <Link to="/users" style={{ textDecoration: "none", color: "#000000" }}>
+        <ListItemButton>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText primary="Users" />
         </ListItemButton>
       </Link>
 

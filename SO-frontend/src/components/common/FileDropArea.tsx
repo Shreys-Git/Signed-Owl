@@ -17,7 +17,7 @@ interface FileUploadProps {
   setFiles: React.Dispatch<React.SetStateAction<File[] | null>>;
 }
 
-export const NavUpload: React.FC<FileUploadProps> = ({ setFiles }) => {
+export const FileDropArea: React.FC<FileUploadProps> = ({ setFiles }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [droppedFiles, setDroppedFiles] = useState<string[]>([]);

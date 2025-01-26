@@ -1,5 +1,5 @@
 import { Box, Card } from "@mui/material";
-import { TextProp } from "./types";
+import { TextProp } from "../types";
 
 export const UserText = ({ text }: TextProp) => {
   return (

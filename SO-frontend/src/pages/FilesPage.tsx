@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { SideBar } from "../components/SideBar";
 import { TopBar } from "../components/TopBar";
-import NavFileGrid from "../components/NavFileGrid";
+import NavFileGrid from "../components/files/NavFileGrid";
 
 export const FilesPage = () => {
   return (

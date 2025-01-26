@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Button, Modal, Typography } from "@mui/material";
 import axios from "axios";
-import { NavUpload } from "./NavUpload";
+import { FileDropArea } from "../common/FileDropArea";
 
 // TypeScript interfaces for the data structure
 interface Party {
@@ -47,7 +47,7 @@ const modalFooterStyle = {
   backgroundColor: "#f9f9f9",
 };
 
-interface Agreement {
+interface NavExtractions {
   id: string;
   file_name: string;
   type: string;
@@ -63,6 +63,20 @@ interface Agreement {
     created_at: string;
     modified_at: string;
   };
+}
+
+export interface Agreement {
+  _id: string;
+  document_id: string;
+  document_text: string;
+  obligations: any[];
+  navigator_extractions: NavExtractions;
+  signature_metadata: {
+    envelope_id: string;
+    signature_status: string;
+  };
+  clauses: any[];
+  versions: string[];
 }
 
 enum SignStatus {
@@ -189,27 +203,27 @@ export default function NavFileGrid() {
 
   const transformData = (data: Agreement[]): any[] => {
     return data.map((agreement) => ({
-      id: agreement.id,
-      signStatus: SignStatus.REVIEW,
-      fileName: agreement.file_name,
-      type: agreement.type,
-      category: agreement.category,
-      status: agreement.status,
-      parties: agreement.parties
+      id: agreement.navigator_extractions.id,
+      signStatus: agreement.signature_metadata.signature_status,
+      fileName: agreement.navigator_extractions.file_name,
+      type: agreement.navigator_extractions.type,
+      category: agreement.navigator_extractions.category,
+      status: agreement.navigator_extractions.status,
+      parties: agreement.navigator_extractions.parties
         .map((party) => party.name_in_agreement)
         .join(", "),
-      provisions: agreement.provisions,
-      effectiveDate: agreement.provisions.effective_date,
-      expirationDate: agreement.provisions.expiration_date,
+      provisions: agreement.navigator_extractions.provisions,
+      effectiveDate: agreement.navigator_extractions.provisions.effective_date,
+      expirationDate:
+        agreement.navigator_extractions.provisions.expiration_date,
     }));
   };
-
-  const fetchNavAPIExtractedData = async () => {
+  const fetchNavGridData = async () => {
     setIsLoggedIn(true);
     setIsDataLoading(true);
     try {
       const response = await axios.get<Agreement[]>(
-        "http://localhost:8000/docusign/navigator/agreements/ALL"
+        "http://localhost:8000/v1/documents/files/ALL/LATEST"
       );
       console.log("response is ", response.data);
       setRows(transformData(response.data));
@@ -219,11 +233,28 @@ export default function NavFileGrid() {
       setIsDataLoading(false);
     }
   };
+  // const fetchNavAPIExtractedData = async () => {
+  //   setIsLoggedIn(true);
+  //   setIsDataLoading(true);
+  //   try {
+  //     const response = await axios.get<Agreement[]>(
+  //       "http://localhost:8000/v1/documents/navigator/ALL"
+  //     );
+  //     console.log("response is ", response.data);
+  //     setRows(transformData(response.data));
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   } finally {
+  //     setIsDataLoading(false);
+  //   }
+  // };
 
   const handleNavAPILogin = async () => {
-    window.location.href = "http://localhost:8000/docusign/navigator/login";
+    window.location.href = "http://localhost:8000/v1/documents/login";
   };
-
+  const handleEsignAPILogin = async () => {
+    window.location.href = "http://localhost:8000/v1/documents/docusign/login";
+  };
   const uploadFiles = async () => {
     const formData = new FormData();
 
@@ -231,8 +262,6 @@ export default function NavFileGrid() {
     if (files) {
       files.forEach((file) => formData.append("docs", file));
     }
-
-    console.log("The payload being sent is:", formData);
 
     try {
       const response = await axios.post(
@@ -244,7 +273,6 @@ export default function NavFileGrid() {
           },
         }
       );
-      console.log("Response Recieved is: ", response);
       if (response.status === 200) {
         console.log("Upload succeeded");
       } else {
@@ -288,7 +316,7 @@ export default function NavFileGrid() {
           aria-describedby="modal-modal-description"
         >
           <Box>
-            <NavUpload setFiles={setFiles} />
+            <FileDropArea setFiles={setFiles} />
             <Box sx={modalFooterStyle}>
               <Button
                 onClick={uploadFiles}
@@ -303,12 +331,26 @@ export default function NavFileGrid() {
         </Modal>
       )}
       <Box>
-        <Typography>Please log in to view agreements.</Typography>
-        <Button onClick={handleNavAPILogin}> Login Big Boy</Button>
+        <Typography>Navigator Login</Typography>
+        <Button
+          onClick={handleNavAPILogin}
+          variant="contained"
+          color="secondary"
+        >
+          Nav Login
+        </Button>
       </Box>
-      <Box>
-        <Typography>Fetch Agreements</Typography>
-        <Button onClick={fetchNavAPIExtractedData}> Get Data </Button>
+      <Box m={2}>
+        <Button
+          onClick={handleEsignAPILogin}
+          variant="contained"
+          color="secondary"
+        >
+          Esign Login
+        </Button>
+      </Box>
+      <Box m={2}>
+        <Button onClick={fetchNavGridData}> Get Data </Button>
       </Box>
       <Box sx={{ height: "100%", width: "100%" }}>
         {isDataLoading ? (

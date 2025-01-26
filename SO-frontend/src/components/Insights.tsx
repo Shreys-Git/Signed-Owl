@@ -52,7 +52,7 @@ export const Insights: React.FC<InsightsProps> = ({ agreement }) => {
     const fetchInsights = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/contract/langgraph/insights",
+          "http://localhost:8000/v1/documents/insights",
           {
             method: "POST",
             headers: {

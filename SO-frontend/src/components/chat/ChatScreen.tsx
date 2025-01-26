@@ -1,24 +1,24 @@
 import { Box, Card } from "@mui/material";
 import { UserText } from "./UserText";
-import { AIResponseText } from "./AIResponseText";
+import { AIResponseMessage } from "./AIResponseMessage";
 import { UserChatInput } from "./UserChatInput";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChatDocumentModal } from "./ChatDocumentModal";
+import { ChatModal } from "./ChatModal";
+import { v4 as uuidv4 } from "uuid";
 
 export type UploadedFile = {
   name: string;
   content: string;
 };
 
-export const Chat = () => {
+export const ChatScreen = () => {
   const [isChatSetup, setIsChatSetup] = useState(false);
   const [filesIDs, setFileIDs] = useState<string[]>([]);
   const [userInput, setUserInput] = useState("");
   const [isNewInputAvailable, setIsNewInputAvailable] = useState(false);
   const [userMessages, setUserMessages] = useState<string[]>([]);
   const [AIMessages, setAIMessages] = useState<string[]>([]);
-  const [files, setFiles] = useState<File[] | null>(null);
 
   // Effect to add new user input to userMessages and reset input
   useEffect(() => {
@@ -28,33 +28,21 @@ export const Chat = () => {
 
       // Call the API to get the AI response
       const sendMessageToAI = async () => {
-        const formData = new FormData();
-
-        // Append message
-        formData.append("message", userInput);
-
-        // Append file IDs
-        filesIDs.forEach((id) => formData.append("agreement_id", id));
-
-        // Append additional files if any
-        if (files) {
-          files.forEach((file) => formData.append("additional_docs", file));
-        }
-
-        console.log("The payload being sent is:", formData);
+        const payload = {
+          session_id: uuidv4(),
+          message: userInput,
+          document_ids: filesIDs,
+        };
+        console.log("The payload being sent is:", payload);
 
         try {
           const response = await axios.post(
-            "http://localhost:8000/RAG/llm/chat",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
+            "http://localhost:8000/v1/converse/rag",
+            payload
           );
 
           if (response.status === 200) {
+            console.log("Upload Response is: ", response.data);
             // Add the current AI response to the existing ones
             setAIMessages((prevMessages) => [
               ...prevMessages,
@@ -74,14 +62,7 @@ export const Chat = () => {
       setUserInput("");
       setIsNewInputAvailable(false);
     }
-  }, [
-    isNewInputAvailable,
-    userMessages,
-    AIMessages,
-    filesIDs,
-    files,
-    userInput,
-  ]);
+  }, [isNewInputAvailable, userMessages, AIMessages, filesIDs, userInput]);
 
   return (
     <>
@@ -106,7 +87,7 @@ export const Chat = () => {
             {userMessages.map((message, index) => (
               <Box key={index}>
                 <UserText text={message} />
-                <AIResponseText text={AIMessages[index]} />
+                <AIResponseMessage text={AIMessages[index]} />
               </Box>
             ))}
           </Box>
@@ -119,11 +100,10 @@ export const Chat = () => {
           />
         </Card>
       ) : (
-        <ChatDocumentModal
+        <ChatModal
           currentFileIDs={filesIDs}
           setFileIDs={setFileIDs}
           setIsChatSetup={setIsChatSetup}
-          setFiles={setFiles}
         />
       )}
     </>
