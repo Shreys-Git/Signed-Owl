@@ -112,9 +112,6 @@ export const MagicEditor = ({
   };
 
   const formatDifferences = (diffs: string[]): string => {
-    if (diffs.length == 0) {
-      return `Nothing to see here yet....`;
-    }
     return diffs
       .map((line, index) => {
         if (line.startsWith("+")) {
