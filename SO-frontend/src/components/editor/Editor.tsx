@@ -71,14 +71,6 @@ const TextEditArea = ({ editorContent, setEditorContent }: EditAreaProps) => {
     setSelectedText(selectedText);
   };
 
-  const handleAlertClick = () => {
-    if (selectedText) {
-      alert(`Selected text: "${selectedText}"`);
-    } else {
-      alert("No text selected! Please select some text first.");
-    }
-  };
-
   // Handle changes in the text field
   const handleTextChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setEditorContent(event.target.value);
@@ -181,13 +173,6 @@ const TextEditArea = ({ editorContent, setEditorContent }: EditAreaProps) => {
                 sx={{ mr: 1 }}
               >
                 Sign
-              </Button>
-              <Button
-                variant={selectedText ? "contained" : "outlined"}
-                startIcon={<NotificationsActive />}
-                onClick={handleAlertClick}
-              >
-                Alert
               </Button>
             </Box>
           </Toolbar>

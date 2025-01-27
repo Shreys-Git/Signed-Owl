@@ -1,4 +1,11 @@
-import { Modal, Box, TextField, Button, CircularProgress } from "@mui/material";
+import {
+  Modal,
+  Box,
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -85,7 +92,6 @@ export const SignModal = ({
     };
     try {
       setIsSending(true);
-      console.log("Sign Payload", requestBody);
       const response = await axios.post(
         "http://localhost:8000/v1/documents/sign",
         requestBody
@@ -132,6 +138,9 @@ export const SignModal = ({
       aria-describedby="modal-modal-description"
     >
       <Box sx={modalStyle}>
+        <Typography pb={1} variant="h5" fontWeight={400}>
+          Send to Sign
+        </Typography>
         {/* Subject Input */}
         <TextField
           id="subject-input"
@@ -168,7 +177,7 @@ export const SignModal = ({
           <Button
             onClick={handleSubmit}
             variant="contained"
-            color="success"
+            color="primary"
             disabled={isSending}
             sx={{ width: "100%" }}
           >
