@@ -123,7 +123,7 @@ export const SignModal = ({
     };
 
     fetchUsers();
-  });
+  }, []);
   return (
     <Modal
       open={isSignModalVisible}

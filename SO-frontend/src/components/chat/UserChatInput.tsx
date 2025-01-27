@@ -34,15 +34,16 @@ export const UserChatInput = ({
       />
       <IconButton
         onClick={handleUserInputSubmit}
+        color="secondary"
         sx={{
           position: "absolute",
           right: "8px",
           top: "50%",
           transform: "translateY(-50%)",
-          backgroundColor: "#F39E60",
-          color: "white",
+          backgroundColor: "#2f27ce",
           "&:hover": {
-            backgroundColor: "#E16A54",
+            color: "white",
+            backgroundColor: "#dddbff",
           },
         }}
       >

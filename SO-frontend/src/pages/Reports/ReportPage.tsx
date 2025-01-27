@@ -1,16 +1,16 @@
 import { Box } from "@mui/material";
-import { ClientReport } from "../../components/reports/ClientReport";
-import { SideBar } from "../../components/SideBar";
-import { TopBar } from "../../components/TopBar";
+import { Report } from "../../components/reports/Report";
+import { TopBar } from "../../components/common/TopBar";
+import { SideBar } from "../../components/common/SideBar";
 
-export const ClientReportPage = () => {
+export const ReportPage = () => {
   return (
     <Box display="flex">
       <SideBar />
       <Box flexGrow={1}>
         <TopBar />
 
-        {/* <ClientReport /> */}
+        <Report />
       </Box>
     </Box>
   );

@@ -1,7 +1,17 @@
-import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import BoltIcon from "@mui/icons-material/Bolt";
 import axios from "axios";
 import { useState } from "react";
+import DifferenceIcon from "@mui/icons-material/Difference";
+import { useParams } from "react-router-dom";
 
 type EditorPromptProps = {
   editorContent: string;
@@ -46,20 +56,27 @@ export const MagicEditor = ({
 }: EditorPromptProps) => {
   const [open, setOpen] = useState(false);
   const [diffs, setDiffs] = useState<string[]>([]);
-
+  const [isAIEditing, setIsAIEditing] = useState<boolean>();
+  const params = useParams();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const promptLLM = () => {
-    const data = { prompt: prompt, agreement: formatAgreement(editorContent) };
+    setIsAIEditing(true);
+    const data = {
+      prompt: prompt,
+      agreement: formatAgreement(editorContent),
+      document_id: params.documentId,
+    };
+    console.log("Sending the Data: ", data);
     axios
       .post("http://localhost:8000/v1/documents/magicEdit", data)
       .then((response) => {
         setEditorContent(response.data.updated_agreement);
         setDiffs(response.data.differences);
-        alert("Document saved!");
+        setIsAIEditing(false);
       })
-      .catch((error) => console.error("Error saving document:", error));
+      .catch((error) => console.error("Error editing document:", error));
   };
 
   const handlePromptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +112,9 @@ export const MagicEditor = ({
   };
 
   const formatDifferences = (diffs: string[]): string => {
+    if (diffs.length == 0) {
+      return `Nothing to see here yet....`;
+    }
     return diffs
       .map((line, index) => {
         if (line.startsWith("+")) {
@@ -153,34 +173,49 @@ export const MagicEditor = ({
         variant="filled"
         value={prompt}
         onChange={handlePromptChange}
+        sx={{ width: "100%" }}
       />
-      <br />
-      <br />
-      <Button
-        onClick={promptLLM}
-        variant="contained"
-        color="primary"
-        sx={{ marginBottom: "20px", width: "100%" }}
-        startIcon={<BoltIcon />}
-      >
-        Generate
-      </Button>
+      <Box display="flex" gap={1} p={1}>
+        <Button
+          startIcon={<DifferenceIcon />}
+          variant="outlined"
+          onClick={handleOpen}
+          sx={{ flex: 1 }}
+        >
+          Changes
+        </Button>
+        <Button
+          onClick={promptLLM}
+          variant="contained"
+          disabled={isAIEditing}
+          startIcon={<BoltIcon />}
+          sx={{ flex: 1 }}
+        >
+          {isAIEditing ? <CircularProgress /> : "Generate"}
+        </Button>
+      </Box>
 
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={modalStyle}>
+        <Card sx={modalStyle}>
           <Box sx={modalContentStyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Differences
-            </Typography>
-            <Box
+            <Card sx={{ backgroundColor: "primary" }}>
+              <Typography
+                sx={{ p: 2 }}
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+              >
+                Changes
+              </Typography>
+            </Card>
+            <Card
               id="modal-modal-description"
-              sx={{ mt: 2 }}
+              sx={{ mt: 2, p: 2, minHeight: "200px" }}
               dangerouslySetInnerHTML={{ __html: formatDifferences(diffs) }}
             />
           </Box>
@@ -188,13 +223,12 @@ export const MagicEditor = ({
             <Button
               onClick={saveChanges}
               variant="contained"
-              color="success"
               sx={{ width: "100%" }}
             >
               Save Changes
             </Button>
           </Box>
-        </Box>
+        </Card>
       </Modal>
     </Box>
   );

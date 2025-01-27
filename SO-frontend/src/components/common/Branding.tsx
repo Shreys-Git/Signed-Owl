@@ -1,16 +1,16 @@
 import { Typography, Box } from "@mui/material";
-import logo from "../resources/images/SignedOwlLogo.png";
+import logo from "../../resources/images/SignedOwlLogo.png";
 
 export const Branding = () => {
   return (
-    <Box display="flex" alignItems="flex-end" marginBottom={2}>
+    <Box display="flex" alignItems="flex-end" marginBottom={2} pt={1}>
       <Box
         component="img"
         src={logo}
         alt="Logo"
         sx={{ height: 40, margin: 0, padding: 0 }}
       />
-      <Typography
+      {/* <Typography
         sx={{
           marginLeft: 1,
           fontSize: "2rem",
@@ -19,7 +19,7 @@ export const Branding = () => {
         }}
       >
         SignedOwl
-      </Typography>
+      </Typography> */}
     </Box>
   );
 };

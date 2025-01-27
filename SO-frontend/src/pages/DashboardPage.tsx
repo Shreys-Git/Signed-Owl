@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import { SideBar } from "../components/SideBar";
-import { TopBar } from "../components/TopBar";
+import { TopBar } from "../components/common/TopBar";
+import { SideBar } from "../components/common/SideBar";
 
 export const DashboardPage = () => {
   return (

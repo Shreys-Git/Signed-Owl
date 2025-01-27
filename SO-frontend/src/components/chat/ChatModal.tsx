@@ -1,4 +1,12 @@
-import { Box, Button, CircularProgress, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import { FileDropArea } from "../common/FileDropArea";
 import axios from "axios";
@@ -22,7 +30,7 @@ const modalStyle = {
   boxShadow: 24,
   display: "flex",
   flexDirection: "column",
-  maxHeight: "80vh",
+  maxHeight: "90vh",
   padding: "1rem",
 };
 
@@ -69,8 +77,6 @@ export const ChatModal = ({
       if (files) {
         files.forEach((file) => formData.append("additional_docs", file));
       }
-
-      console.log("The payload being sent is:", formData);
 
       try {
         const response = await axios.post(
@@ -134,6 +140,21 @@ export const ChatModal = ({
       aria-describedby="modal-modal-description"
     >
       <Box sx={modalStyle}>
+        <Typography
+          variant="h5"
+          sx={{
+            color: "text.secondary",
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}
+        >
+          Documents
+        </Typography>
+        <Typography variant="body1" sx={{ color: "text.secondary" }}>
+          Add the documents you would like to converse with
+        </Typography>
+        <Divider sx={{ margin: 1.5 }} />
         <Select
           isMulti
           name="agreements"
@@ -149,7 +170,7 @@ export const ChatModal = ({
           <Button
             onClick={saveChanges}
             variant="contained"
-            color="success"
+            color="primary"
             sx={{ width: "100%" }}
             disabled={isUploading}
           >

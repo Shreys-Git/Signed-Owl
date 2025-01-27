@@ -10,7 +10,7 @@ export type Task = {
   title: string;
   description: string;
   status: TaskStatus;
-  priority?: TaskPriority;
+  priority: TaskPriority;
   tags?: string[];
 };
 

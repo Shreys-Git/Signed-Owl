@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import { TopBar } from "../components/TopBar";
-import { SideBar } from "../components/SideBar";
+import { TopBar } from "../components/common/TopBar";
 import { Kanban } from "../components/kanban/Kanban";
+import { SideBar } from "../components/common/SideBar";
 
 export const KanbanPage = () => {
   return (

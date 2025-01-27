@@ -3,7 +3,7 @@ import { TextProp } from "../types";
 
 export const UserText = ({ text }: TextProp) => {
   return (
-    <Box display="flex" justifyContent="flex-end">
+    <Box display="flex" justifyContent="flex-end" margin={1}>
       <Card
         sx={{
           maxWidth: "60%",

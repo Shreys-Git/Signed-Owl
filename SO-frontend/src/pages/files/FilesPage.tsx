@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import { SideBar } from "../components/SideBar";
-import { TopBar } from "../components/TopBar";
-import NavFileGrid from "../components/files/NavFileGrid";
+import { SideBar } from "../../components/common/SideBar";
+import { TopBar } from "../../components/common/TopBar";
+import { Files } from "../../components/files/Files";
 
 export const FilesPage = () => {
   return (
@@ -9,7 +9,7 @@ export const FilesPage = () => {
       <SideBar />
       <Box flexGrow={1}>
         <TopBar />
-        <NavFileGrid />
+        <Files />
       </Box>
     </Box>
   );

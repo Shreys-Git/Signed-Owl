@@ -1,10 +1,9 @@
 import { Box } from "@mui/material";
-import { MagicEditor } from "../components/MagicEditor";
 import { useEffect, useState } from "react";
-import HoverHighlightEditor from "../components/Editor";
-import { Owlie } from "../components/Owlie";
+import HoverHighlightEditor from "./Editor";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Owlie } from "./Owlie";
 
 export const AIContractDrafter = () => {
   const params = useParams();
@@ -31,15 +30,9 @@ export const AIContractDrafter = () => {
     };
 
     fetchAgreementText();
-  });
+  }, []);
   return (
     <Box display="flex" flexDirection="row">
-      {/* <AgreementEditor
-        content={content}
-        setContent={setContent}
-        documentId={documentId}
-        setDocumentId={setDocumentId}
-      /> */}
       <HoverHighlightEditor
         editorContent={editorContent}
         setEditorContent={setEditorContent}
@@ -50,12 +43,6 @@ export const AIContractDrafter = () => {
         prompt={prompt}
         setPrompt={setPrompt}
       />
-      {/* <MagicEditor
-        content={content}
-        setContent={setContent}
-        prompt={prompt}
-        setPrompt={setPrompt}
-      /> */}
     </Box>
   );
 };

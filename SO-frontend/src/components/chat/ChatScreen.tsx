@@ -33,7 +33,6 @@ export const ChatScreen = () => {
           message: userInput,
           document_ids: filesIDs,
         };
-        console.log("The payload being sent is:", payload);
 
         try {
           const response = await axios.post(
@@ -42,7 +41,6 @@ export const ChatScreen = () => {
           );
 
           if (response.status === 200) {
-            console.log("Upload Response is: ", response.data);
             // Add the current AI response to the existing ones
             setAIMessages((prevMessages) => [
               ...prevMessages,
@@ -70,7 +68,7 @@ export const ChatScreen = () => {
         <Card
           sx={{
             bgcolor: "#f5f5f5",
-            height: "80vh",
+            height: "90vh",
             padding: "1rem",
             display: "flex",
             flexDirection: "column",
@@ -79,11 +77,11 @@ export const ChatScreen = () => {
           <Box
             sx={{
               flexGrow: 1,
-              overflowY: "auto", // Enable vertical scrolling when content overflows
+              overflowY: "auto",
               paddingRight: "8px",
             }}
           >
-            {/* Render user messages */}
+            {/* Render the messages */}
             {userMessages.map((message, index) => (
               <Box key={index}>
                 <UserText text={message} />

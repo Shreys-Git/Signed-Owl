@@ -19,14 +19,15 @@ export const TopBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleNavAPILogin = async () => {
+    window.location.href = "http://localhost:8000/v1/documents/login";
+  };
+  const handleEsignAPILogin = async () => {
+    window.location.href = "http://localhost:8000/v1/documents/docusign/login";
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="static"
-        elevation={0}
-        sx={{ bgcolor: "background.paper" }}
-      >
+      <AppBar position="static" elevation={0} sx={{ bgcolor: "#1a1f2e" }}>
         <Toolbar>
           <Typography
             variant="h6"
@@ -40,6 +41,7 @@ export const TopBar = () => {
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
+                color="secondary"
                 onClick={handleMenu}
               >
                 <AccountCircle />
@@ -61,6 +63,8 @@ export const TopBar = () => {
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleEsignAPILogin}>Esign Auth</MenuItem>
+                <MenuItem onClick={handleNavAPILogin}>Nav Auth</MenuItem>
               </Menu>
             </div>
           )}

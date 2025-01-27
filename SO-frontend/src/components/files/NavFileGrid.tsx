@@ -5,6 +5,11 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Button, Modal, Typography } from "@mui/material";
 import axios from "axios";
 import { FileDropArea } from "../common/FileDropArea";
+import { Stat } from "./Files";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import PeopleIcon from "@mui/icons-material/People";
+import { FileHeader } from "./FileHeader";
 
 // TypeScript interfaces for the data structure
 interface Party {
@@ -89,7 +94,6 @@ const columns: GridColDef[] = [
   {
     field: "id",
     headerName: "ID",
-    width: 100,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.value}`}
@@ -102,7 +106,6 @@ const columns: GridColDef[] = [
   {
     field: "signStatus",
     headerName: "Status",
-    width: 100,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -115,7 +118,6 @@ const columns: GridColDef[] = [
   {
     field: "fileName",
     headerName: "File Name",
-    width: 200,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -128,7 +130,7 @@ const columns: GridColDef[] = [
   {
     field: "type",
     headerName: "Type",
-    width: 200,
+    minWidth: 100,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -141,7 +143,7 @@ const columns: GridColDef[] = [
   {
     field: "category",
     headerName: "Category",
-    width: 150,
+    minWidth: 10,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -154,7 +156,7 @@ const columns: GridColDef[] = [
   {
     field: "parties",
     headerName: "Parties",
-    width: 300,
+    minWidth: 300,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -167,7 +169,7 @@ const columns: GridColDef[] = [
   {
     field: "effectiveDate",
     headerName: "Effective Date",
-    width: 130,
+    minWidth: 150,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -180,7 +182,7 @@ const columns: GridColDef[] = [
   {
     field: "expirationDate",
     headerName: "Expiration Date",
-    width: 130,
+    minWidth: 150,
     renderCell: (params) => (
       <Link
         to={`/documents/files/${params.row.id}`}
@@ -191,8 +193,10 @@ const columns: GridColDef[] = [
     ),
   },
 ];
-
-export default function NavFileGrid() {
+type FileGridProps = {
+  setFileStats: React.Dispatch<React.SetStateAction<Stat[]>>;
+};
+export default function NavFileGrid({ setFileStats }: FileGridProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<any[]>([]);
@@ -218,6 +222,40 @@ export default function NavFileGrid() {
         agreement.navigator_extractions.provisions.expiration_date,
     }));
   };
+
+  const collateStats = (data: Agreement[]): Stat[] => {
+    // Aggregate and compute the statistics
+    const fileCategories = new Set<string>();
+    let totalFiles = data.length;
+    let totalParties = 0;
+
+    data.forEach((agreement) => {
+      fileCategories.add(agreement.navigator_extractions.category);
+      totalParties += agreement.navigator_extractions.parties.length;
+    });
+
+    return [
+      {
+        title: "File Categories",
+        value: fileCategories.size.toString(), // Unique file types
+        delta: 0, // No delta calculation (static stat for now)
+        icon: <ContentCopyIcon />,
+      },
+      {
+        title: "Total Files",
+        value: totalFiles.toString(), // Total files processed
+        delta: 0, // No delta calculation (can be added if you track previous stats)
+        icon: <AttachFileIcon />,
+      },
+      {
+        title: "Total Parties",
+        value: totalParties.toString(), // Total parties involved
+        delta: 0, // No delta calculation
+        icon: <PeopleIcon />,
+      },
+    ];
+  };
+
   const fetchNavGridData = async () => {
     setIsLoggedIn(true);
     setIsDataLoading(true);
@@ -225,35 +263,21 @@ export default function NavFileGrid() {
       const response = await axios.get<Agreement[]>(
         "http://localhost:8000/v1/documents/files/ALL/LATEST"
       );
-      console.log("response is ", response.data);
-      setRows(transformData(response.data));
+
+      if (response.status == 200) {
+        setRows(transformData(response.data));
+        setFileStats(collateStats(response.data));
+      } else {
+        setRows([]);
+        setFileStats([]);
+      }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      alert(
+        "You need to provide Esign and Nav permissions from the top right corner"
+      );
     } finally {
       setIsDataLoading(false);
     }
-  };
-  // const fetchNavAPIExtractedData = async () => {
-  //   setIsLoggedIn(true);
-  //   setIsDataLoading(true);
-  //   try {
-  //     const response = await axios.get<Agreement[]>(
-  //       "http://localhost:8000/v1/documents/navigator/ALL"
-  //     );
-  //     console.log("response is ", response.data);
-  //     setRows(transformData(response.data));
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   } finally {
-  //     setIsDataLoading(false);
-  //   }
-  // };
-
-  const handleNavAPILogin = async () => {
-    window.location.href = "http://localhost:8000/v1/documents/login";
-  };
-  const handleEsignAPILogin = async () => {
-    window.location.href = "http://localhost:8000/v1/documents/docusign/login";
   };
   const uploadFiles = async () => {
     const formData = new FormData();
@@ -282,77 +306,14 @@ export default function NavFileGrid() {
       console.error("Error during POST request:", error);
     }
   };
-
   useEffect(() => {
-    // Connect to the WebSocket server
-    const socket = new WebSocket("ws://localhost:8000/docusign/ws");
-
-    // Handle incoming messages
-    socket.onmessage = (event) => {
-      setSignatureStatus(event.data); // Update the state with the received message
-    };
-
-    // Handle socket closure
-    socket.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    // Cleanup the WebSocket connection
-    return () => {
-      socket.close();
-    };
+    fetchNavGridData();
   }, []);
 
   return (
-    <div>
-      <Button onClick={() => setOpenUploadModal(true)}> Upload Files</Button>
-      <Typography>{signatureStatus}</Typography>
-      {openUploadModal && (
-        <Modal
-          sx={modalStyle}
-          open={openUploadModal}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box>
-            <FileDropArea setFiles={setFiles} />
-            <Box sx={modalFooterStyle}>
-              <Button
-                onClick={uploadFiles}
-                variant="contained"
-                color="success"
-                sx={{ width: "100%" }}
-              >
-                Upload Files
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-      )}
-      <Box>
-        <Typography>Navigator Login</Typography>
-        <Button
-          onClick={handleNavAPILogin}
-          variant="contained"
-          color="secondary"
-        >
-          Nav Login
-        </Button>
-      </Box>
-      <Box m={2}>
-        <Button
-          onClick={handleEsignAPILogin}
-          variant="contained"
-          color="secondary"
-        >
-          Esign Login
-        </Button>
-      </Box>
-      <Box m={2}>
-        <Button onClick={fetchNavGridData}> Get Data </Button>
-      </Box>
-      <Box sx={{ height: "100%", width: "100%" }}>
+    <Box margin={2}>
+      <FileHeader />
+      <Box sx={{ maxWidth: "100%", maxHeight: "80%" }}>
         {isDataLoading ? (
           <Typography>Loading data...</Typography>
         ) : (
@@ -372,6 +333,6 @@ export default function NavFileGrid() {
           />
         )}
       </Box>
-    </div>
+    </Box>
   );
 }

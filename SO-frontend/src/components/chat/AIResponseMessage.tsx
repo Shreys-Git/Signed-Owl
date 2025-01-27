@@ -3,7 +3,7 @@ import { TextProp } from "../types";
 
 export const AIResponseMessage = ({ text }: TextProp) => {
   return (
-    <Box display="flex">
+    <Box display="flex" margin={1}>
       <Card
         sx={{
           maxWidth: "60%",

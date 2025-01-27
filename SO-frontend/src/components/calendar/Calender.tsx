@@ -22,9 +22,10 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
+import { EventsPanel } from "./EventsPanel";
 
 // Define the Event interface for type safety
-interface Event {
+export interface CalendarEvent {
   event_id: string;
   document_id: string;
   title: string;
@@ -35,15 +36,15 @@ interface Event {
 }
 
 export const WorkflowCalendar: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [openAddModal, setOpenAddModal] = useState(false);
-  const [newEvent, setNewEvent] = useState<Partial<Event>>({});
+  const [newEvent, setNewEvent] = useState<Partial<CalendarEvent>>({});
 
   // Fetch all events from the backend
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get<Event[]>(
+        const response = await axios.get<CalendarEvent[]>(
           "http://localhost:8000/v1/calendar"
         );
         setEvents(response.data || []);
@@ -57,7 +58,7 @@ export const WorkflowCalendar: React.FC = () => {
   // Add a new event
   const handleAddEvent = async () => {
     // Ensure the `newEvent` is fully populated with default values if fields are missing
-    const eventToAdd: Event = {
+    const eventToAdd: CalendarEvent = {
       ...newEvent,
       event_id: crypto.randomUUID(),
       document_id: "", // Generate a temporary unique ID
@@ -69,7 +70,7 @@ export const WorkflowCalendar: React.FC = () => {
     };
 
     try {
-      const response = await axios.post<Event>(
+      const response = await axios.post<CalendarEvent>(
         "http://localhost:8000/v1/calendar",
         eventToAdd
       );
@@ -134,30 +135,14 @@ export const WorkflowCalendar: React.FC = () => {
     <>
       <Box m="20px">
         <Box display="flex" justifyContent="space-between">
-          <Box flex="1 1 20%" p="15px" borderRadius="4px">
-            <Typography variant="h5">Events</Typography>
-            <List>
-              {(events || []).map((event) => (
-                <ListItem key={event.event_id}>
-                  <ListItemText
-                    primary={event.title}
-                    secondary={
-                      <Typography>
-                        {event.description} —{" "}
-                        {formatDate(new Date(event.start), {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <Box flex="1 1 100%" ml="15px">
-            <FullCalendar {...calendarOptions} />
+          <Box display="flex" flex="1" gap="20px">
+            <Box flex="2">
+              <FullCalendar {...calendarOptions} />
+            </Box>
+
+            <Box flex="1">
+              <EventsPanel events={events} />
+            </Box>
           </Box>
         </Box>
       </Box>
